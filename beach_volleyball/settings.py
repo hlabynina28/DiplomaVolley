@@ -20,6 +20,14 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-fallback-only-for-dev')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
+# Railway healthcheck hostname must be allowed for deployments to succeed
+ALLOWED_HOSTS.append('healthcheck.railway.app')
+
+# Include the Railway public domain if available
+_railway_domain = os.getenv('RAILWAY_PUBLIC_DOMAIN')
+if _railway_domain:
+    ALLOWED_HOSTS.append(_railway_domain)
+
 # ── Приложения ────────────────────────────────────────────────────────────
 
 INSTALLED_APPS = [
