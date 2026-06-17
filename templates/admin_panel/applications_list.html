@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Заявки на турниры{% endblock %}
+
+{% block content %}
+<h1>Заявки на турниры</h1>
+<div style="margin-bottom:1.5rem;">
+    <a href="/admin-panel/tournaments/create/" class="btn btn-primary">+ Создать турнир</a>
+    <a href="/tournament/past/" class="btn btn-secondary">📋 Прошедшие турниры</a>
+</div>
+
+{% if data %}
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Турнир</th>
+                <th>Дата</th>
+                <th>Ожидают рассмотрения</th>
+                <th>Одобрено</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.tournament.title }}</td>
+            <td>{{ item.tournament.date|date:"d.m.Y" }}</td>
+            <td>
+                {% if item.pending_count > 0 %}
+                <span class="badge badge-pending">{{ item.pending_count }}</span>
+                {% else %}
+                <span style="color: #aaa;">0</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge badge-approved">{{ item.approved_count }}</span>
+            </td>
+            <td>
+                <a href="/admin-panel/applications/{{ item.tournament.pk }}/" class="btn btn-secondary">
+                    Просмотреть
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p>Предстоящих турниров нет.</p>
+</div>
+{% endif %}
+{% endblock %}

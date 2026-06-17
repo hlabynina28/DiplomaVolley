@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Удалить турнир{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px;">
+    <h1 style="margin-bottom:1rem;">Удалить турнир?</h1>
+    <p>«<strong>{{ tournament.title }}</strong>» ({{ tournament.date|date:"d.m.Y" }})</p>
+    <p style="color:#c0392b; margin-top:.75rem;">
+        Вместе с турниром удалятся все заявки на него.
+    </p>
+    <div style="display:flex; gap:.75rem; margin-top:1.5rem;">
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Да, удалить</button>
+        </form>
+        <a href="/admin-panel/applications/" class="btn btn-secondary">Отмена</a>
+    </div>
+</div>
+{% endblock %}

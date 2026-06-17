@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Пляжный волейбол{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; line-height: 1.5; }
+        header { background: #1a6b3c; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        header a { color: white; text-decoration: none; }
+        header nav a { margin-left: 1.5rem; opacity: 0.85; }
+        header nav a:hover { opacity: 1; }
+        .container { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .btn { display: inline-block; padding: .5rem 1.2rem; border-radius: 5px; border: none; cursor: pointer; font-size: 1rem; text-decoration: none; }
+        .btn-primary { background: #1a6b3c; color: white; }
+        .btn-primary:hover { background: #155c32; }
+        .btn-danger { background: #c0392b; color: white; }
+        .btn-danger:hover { background: #a93226; }
+        .btn-secondary { background: #eee; color: #333; }
+        .btn-secondary:hover { background: #ddd; }
+        .messages { list-style: none; margin-bottom: 1rem; }
+        .messages li { padding: .75rem 1rem; border-radius: 5px; margin-bottom: .5rem; }
+        .messages li.success { background: #d4edda; color: #155724; }
+        .messages li.error { background: #f8d7da; color: #721c24; }
+        label { display: block; font-weight: 600; margin-top: .75rem; margin-bottom: .2rem; font-size: .9rem; }
+        input, select, textarea { width: 100%; padding: .5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        input:focus, select:focus { outline: 2px solid #1a6b3c; border-color: transparent; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.5rem; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        h1 { margin-bottom: 1rem; }
+        h2 { margin-bottom: .75rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid #eee; }
+        th { background: #f0f0f0; font-weight: 600; }
+        .badge { display: inline-block; padding: .2rem .6rem; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-approved { background: #d4edda; color: #155724; }
+        details summary { cursor: pointer; font-weight: 600; padding: .5rem 0; }
+        footer { text-align: center; padding: 2rem; color: #999; font-size: .85rem; }
+    </style>
+</head>
+<body>
+<header>
+    <a href="/" style="font-size: 1.2rem; font-weight: 700;">🏐 BeachVolley</a>
+    <nav>
+        <a href="/">Турниры</a>
+        <a href="/training/">Тренировки</a>
+        <a href="/venue/">О нас</a>
+        {% if user.is_authenticated %}
+            <a href="/admin-panel/applications/">Управление</a>
+            <a href="/admin-panel/logout/">Выйти</a>
+        {% else %}
+            <a href="/admin-panel/login/">Для администраторов</a>
+        {% endif %}
+    </nav>
+</header>
+
+<div class="container">
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<footer>© 2025 Beach Volleyball Court</footer>
+</body>
+</html>

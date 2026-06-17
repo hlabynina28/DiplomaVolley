@@ -1,0 +1,1 @@
+web: gunicorn beach_volleyball.wsgi --log-file -

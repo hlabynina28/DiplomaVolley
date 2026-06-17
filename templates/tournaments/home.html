@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Главная — Пляжный волейбол{% endblock %}
+
+{% block content %}
+<div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+    <h1 style="margin:0;">Предстоящие турниры</h1>
+    <a href="/tournament/past/" class="btn btn-secondary">📋 Прошедшие турниры</a>
+</div>
+
+{% if upcoming %}
+    {% for t in upcoming %}
+    <div class="card">
+        <h2><a href="/tournament/{{ t.pk }}/" style="color: #1a6b3c; text-decoration: none;">{{ t.title }}</a></h2>
+        <p style="color: #666; margin-bottom: .5rem;">📅 {{ t.date|date:"d.m.Y" }}</p>
+        <div style="margin-top: 1rem;">
+            <a href="/tournament/{{ t.pk }}/" class="btn btn-primary">Подробнее / Подать заявку</a>
+<!--            <span style="margin-left: 1rem; color: #666; font-size: .9rem;">-->
+<!--                Одобрено команд: {{ t.approved_applications.count }} / {{ t.max_teams }}-->
+<!--            </span>-->
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p>Предстоящих турниров пока нет. Следите за обновлениями!</p>
+    </div>
+{% endif %}
+
+{% endblock %}

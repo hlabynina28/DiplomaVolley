@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ tournament.title }} — результаты{% endblock %}
+
+{% block content %}
+
+<div class="card">
+    <h1>{{ tournament.title }}</h1>
+    <p style="color:#666; margin:.4rem 0;">📅 {{ tournament.date|date:"d F Y" }}</p>
+    <p style="margin-top:.75rem;">{{ tournament.description }}</p>
+
+    {% if tournament.regulation_file %}
+    <div style="margin-top:1rem; display:flex; gap:.5rem; flex-wrap:wrap;">
+        <a href="{{ tournament.regulation_file.url }}" target="_blank" class="btn btn-secondary">
+            📄 Положение турнира
+        </a>
+    </div>
+    {% endif %}
+    </div>
+</div>
+
+{% if results %}
+<div class="card">
+    <h2 style="margin-bottom:1rem;">🏆 Итоговые результаты</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:80px;">Место</th>
+                <th>Команда</th>
+                <th>Результат</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for r in results %}
+        <tr style="{% if r.place == 1 %}background:#fffbea;{% elif r.place == 2 %}background:#f8f8f8;{% elif r.place == 3 %}background:#fff5f0;{% endif %}">
+            <td style="font-size:1.3rem; text-align:center;">
+                {% if r.place == 1 %}🥇
+                {% elif r.place == 2 %}🥈
+                {% elif r.place == 3 %}🥉
+                {% else %}{{ r.place }}{% endif %}
+            </td>
+            <td><strong>{{ r.team_name }}</strong></td>
+            <td style="color:#666;">{{ r.score }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if approved %}
+<div class="card">
+    <h2 style="margin-bottom:1rem;">Участники ({{ approved.count }})</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Участник 1</th>
+                <th>Город</th>
+                <th>Участник 2</th>
+                <th>Город</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for app in approved %}
+        <tr>
+            <td>{{ app.player1_name }}</td>
+            <td style="color:#666;">{{ app.player1_city }}</td>
+            <td>{{ app.player2_name }}</td>
+            <td style="color:#666;">{{ app.player2_city }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p style="color:#888;">Список участников недоступен.</p>
+</div>
+{% endif %}
+
+<a href="/tournament/past/" style="color:#1a6b3c;">← Все прошедшие турниры</a>
+
+{% endblock %}

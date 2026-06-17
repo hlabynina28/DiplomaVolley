@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Прошедшие турниры{% endblock %}
+
+{% block content %}
+<div style="display:flex; align-items:center; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+    <h1 style="margin:0;">Прошедшие турниры</h1>
+    <a href="/" class="btn btn-secondary">← На главную</a>
+</div>
+
+{% if past %}
+    {% for t in past %}
+    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+            <h2 style="margin-bottom:.3rem;">
+                <a href="/tournament/past/{{ t.pk }}/"
+                   style="color:#1a6b3c; text-decoration:none;">{{ t.title }}</a>
+            </h2>
+            <p style="color:#888; font-size:.9rem;">
+                📅 {{ t.date|date:"d.m.Y" }}
+                {% if t.results.all %}
+                &nbsp;·&nbsp; 🏆 {{ t.results.count }} мест занято
+                {% endif %}
+            </p>
+        </div>
+        <a href="/tournament/past/{{ t.pk }}/" class="btn btn-secondary">Результаты →</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="card">
+        <p style="color:#888;">Завершённых турниров пока нет.</p>
+    </div>
+{% endif %}
+{% endblock %}

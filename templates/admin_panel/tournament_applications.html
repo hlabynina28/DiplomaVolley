@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Заявки — {{ tournament.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ tournament.title }}</h1>
+    <p style="color:#666;">📅 {{ tournament.date|date:"d.m.Y" }}</p>
+    <p style="margin-top:.75rem;">{{ tournament.description }}</p>
+    <a href="/admin-panel/tournaments/{{ tournament.pk }}/edit/"
+       class="btn btn-secondary" style="margin-top:.75rem; display:inline-block;">
+        Редактировать турнир
+    </a>
+<a href="/admin-panel/applications/{{ tournament.pk }}/results/"
+   class="btn btn-green btn-sm mt-1">🏆 Добавить результаты</a>
+</div>
+
+
+<div class="card">
+    <details>
+        <summary>Одобренные участники ({{ approved.count }})</summary>
+        {% if approved %}
+        <table style="margin-top:1rem;">
+            <thead>
+                <tr><th>#</th><th>Участник 1</th><th>Город</th><th>Тел. 1</th><th>Участник 2</th><th>Город</th><th>Тел. 2</th></tr>
+            </thead>
+            <tbody>
+            {% for app in approved %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ app.player1_name }}</td>
+                <td>{{ app.player1_city }}</td>
+                <td>{{ app.player1_phone }}</td>
+                <td>{{ app.player2_name }}</td>
+                <td>{{ app.player2_city }}</td>
+                <td>{{ app.player2_phone }}</td>
+            </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:#aaa;margin-top:.75rem;">Нет одобренных заявок.</p>
+        {% endif %}
+    </details>
+</div>
+
+<h2 style="margin-bottom:.75rem;">На рассмотрении ({{ pending.count }})</h2>
+
+{% if pending %}
+{% for app in pending %}
+<div class="card" style="border-left:4px solid #f0ad4e;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;">
+        <div>
+            <p><strong>Участник 1:</strong> {{ app.player1_name }} — {{ app.player1_city }}</p>
+            <p style="color:#666;font-size:.9rem;">
+                Д.р.: {{ app.player1_dob|date:"d.m.Y" }} &nbsp;|&nbsp; Тел.: {{ app.player1_phone }}
+            </p>
+            <p style="margin-top:.5rem;"><strong>Участник 2:</strong> {{ app.player2_name }} — {{ app.player2_city }}</p>
+            <p style="color:#666;font-size:.9rem;">
+                Д.р.: {{ app.player2_dob|date:"d.m.Y" }} &nbsp;|&nbsp; Тел.: {{ app.player2_phone }}
+            </p>
+            <p style="color:#aaa;font-size:.8rem;margin-top:.5rem;">Подана: {{ app.submitted_at|date:"d.m.Y H:i" }}</p>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+            <form method="post" action="/admin-panel/applications/{{ tournament.pk }}/approve/{{ app.pk }}/">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">✓ Одобрить</button>
+            </form>
+            <form method="post" action="/admin-panel/applications/{{ tournament.pk }}/reject/{{ app.pk }}/"
+                  onsubmit="return confirm('Удалить заявку?')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">✗ Отклонить</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="card">
+    <p style="color:#aaa;">Нет заявок, ожидающих рассмотрения.</p>
+</div>
+{% endif %}
+
+<a href="/admin-panel/applications/" style="color:#1a6b3c;">← Все турниры</a>
+{% endblock %}

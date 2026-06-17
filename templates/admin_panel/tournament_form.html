@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ action }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:680px;">
+    <h1 style="margin-bottom:1.5rem;">{{ action }}</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>{{ form.title.label }}</label>
+        {{ form.title }}
+
+        <label>{{ form.date.label }}</label>
+        {{ form.date }}
+
+        <label>{{ form.max_teams.label }}</label>
+        {{ form.max_teams }}
+
+        <label>{{ form.description.label }}</label>
+        <textarea name="description" rows="5"
+            style="width:100%;padding:.5rem;border:1px solid #ccc;border-radius:4px;font-size:1rem;">{{ form.description.value|default:'' }}</textarea>
+
+        <label style="margin-top:1rem; display:block;">{{ form.regulation_file.label }}</label>
+        {{ form.regulation_file }}
+
+        {% if tournament.regulation_file %}
+        <p style="margin-top:.4rem; font-size:.85rem; color:#555;">
+            Текущий файл:
+            <a href="{{ tournament.regulation_file.url }}" target="_blank">{{ tournament.regulation_file.name }}</a>
+        </p>
+        {% endif %}
+
+        {% if form.errors %}
+        <div style="background:#f8d7da;color:#721c24;padding:.75rem;border-radius:5px;margin-top:1rem;">
+            {% for field in form %}
+                {% for error in field.errors %}<p>{{ field.label }}: {{ error }}</p>{% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:.75rem;margin-top:1.5rem;align-items:center;">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a href="/admin-panel/applications/" class="btn btn-secondary">Отмена</a>
+
+            {% if tournament %}
+            <form method="post" action="/admin-panel/tournaments/{{ tournament.pk }}/delete/"
+                  style="margin-left:auto;"
+                  onsubmit="return confirm('Удалить турнир «{{ tournament.title }}»? Все заявки тоже удалятся.')">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Удалить турнир</button>
+            </form>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}

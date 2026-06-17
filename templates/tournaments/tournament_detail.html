@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}{{ tournament.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ tournament.title }}</h1>
+    <p style="color: #666; margin: .5rem 0;">📅 {{ tournament.date|date:"d F Y" }}</p>
+    <p style="margin-top: 1rem;">{{ tournament.description }}</p>
+
+    {% if tournament.regulation_file %}
+    <div style="margin-top: 1rem;">
+        <a href="{{ tournament.regulation_file.url }}"
+           target="_blank"
+           class="btn btn-secondary"
+           style="display: inline-flex; align-items: center; gap: .4rem;">
+            📄 Положение турнира
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% if tournament.is_upcoming %}
+
+<div class="card">
+    <h2>Участники ({{ tournament.approved_applications.count }})</h2>
+    {% if tournament.approved_applications %}
+    <table>
+        <thead>
+            <tr><th>#</th><th>Участник 1</th><th>Город</th><th>Участник 2</th><th>Город</th></tr>
+        </thead>
+        <tbody>
+        {% for app in tournament.approved_applications %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ app.player1_name }}</td>
+            <td>{{ app.player1_city }}</td>
+            <td>{{ app.player2_name }}</td>
+            <td>{{ app.player2_city }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color: #888;">Одобренных заявок пока нет.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Подать заявку</h2>
+    <form method="post" action="/tournament/{{ tournament.pk }}/apply/">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <h3 style="margin: .75rem 0 .5rem; font-size: 1rem; color: #555;">Участник 1</h3>
+                <label>{{ apply_form.player1_name.label }}</label>{{ apply_form.player1_name }}
+                <label>{{ apply_form.player1_dob.label }}</label>{{ apply_form.player1_dob }}
+                <label>{{ apply_form.player1_phone.label }}</label>{{ apply_form.player1_phone }}
+                <label>{{ apply_form.player1_city.label }}</label>{{ apply_form.player1_city }}
+            </div>
+            <div>
+                <h3 style="margin: .75rem 0 .5rem; font-size: 1rem; color: #555;">Участник 2</h3>
+                <label>{{ apply_form.player2_name.label }}</label>{{ apply_form.player2_name }}
+                <label>{{ apply_form.player2_dob.label }}</label>{{ apply_form.player2_dob }}
+                <label>{{ apply_form.player2_phone.label }}</label>{{ apply_form.player2_phone }}
+                <label>{{ apply_form.player2_city.label }}</label>{{ apply_form.player2_city }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 1.2rem;">Подать заявку</button>
+    </form>
+</div>
+
+<div class="card">
+    <details>
+        <summary>Удалить мою заявку</summary>
+        <p style="color: #888; font-size: .9rem; margin: .5rem 0 1rem;">Укажите данные обоих участников для подтверждения.</p>
+        <form method="post" action="/tournament/{{ tournament.pk }}/withdraw/">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div>
+                    <label>{{ withdraw_form.player1_name.label }}</label>{{ withdraw_form.player1_name }}
+                    <label>{{ withdraw_form.player1_phone.label }}</label>{{ withdraw_form.player1_phone }}
+                </div>
+                <div>
+                    <label>{{ withdraw_form.player2_name.label }}</label>{{ withdraw_form.player2_name }}
+                    <label>{{ withdraw_form.player2_phone.label }}</label>{{ withdraw_form.player2_phone }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-danger" style="margin-top: 1rem;"
+                    onclick="return confirm('Удалить заявку?')">Удалить заявку</button>
+        </form>
+    </details>
+</div>
+
+{% else %}
+
+<div class="card">
+    <h2>Результаты</h2>
+    {% if tournament.results.all %}
+    <table>
+        <thead><tr><th>Место</th><th>Команда</th><th>Результат</th></tr></thead>
+        <tbody>
+        {% for result in tournament.results.all %}
+        <tr>
+            <td>{% if result.place == 1 %}🥇{% elif result.place == 2 %}🥈{% elif result.place == 3 %}🥉{% else %}{{ result.place }}{% endif %}</td>
+            <td>{{ result.team_name }}</td>
+            <td>{{ result.score }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color: #888;">Результаты ещё не добавлены.</p>
+    {% endif %}
+</div>
+
+{% endif %}
+
+<a href="/" style="color: #1a6b3c;">← Все турниры</a>
+{% endblock %}
